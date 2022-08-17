@@ -14,6 +14,7 @@ using osu.Game.Configuration;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Input;
 using osu.Game.Localisation;
+using osuTK;
 
 namespace osu.Game.Overlays.Settings.Sections.Input
 {
@@ -23,15 +24,24 @@ namespace osu.Game.Overlays.Settings.Sections.Input
 
         protected override LocalisableString Header => MouseSettingsStrings.Mouse;
 
-        private Bindable<double> handlerSensitivity;
+        private Bindable<Vector2> handlerSensitivity;
+        private Bindable<Vector2> localSensitivity;
 
-        private Bindable<double> localSensitivity;
+        private BindableNumber<double> sensitivity = new BindableNumber<double>(1) { MinValue = 0.1, MaxValue = 10, Precision = 0.01 };
+        private BindableNumber<double> sensitivityX = new BindableNumber<double>(1) { MinValue = 0.1, MaxValue = 10, Precision = 0.01 };
+        private BindableNumber<double> sensitivityY = new BindableNumber<double>(1) { MinValue = 0.1, MaxValue = 10, Precision = 0.01 };
 
         private Bindable<WindowMode> windowMode;
         private SettingsEnumDropdown<OsuConfineMouseMode> confineMouseModeSetting;
         private Bindable<bool> relativeMode;
 
+        private Bindable<bool> showAxisSensitivity;
+
         private SettingsCheckbox highPrecisionMouse;
+
+        private SensitivitySetting sensitivitySetting;
+        private SensitivitySetting sensitivityXSetting;
+        private SensitivitySetting sensitivityYSetting;
 
         public MouseSettings(MouseHandler mouseHandler)
         {
@@ -42,11 +52,12 @@ namespace osu.Game.Overlays.Settings.Sections.Input
         private void load(OsuConfigManager osuConfig, FrameworkConfigManager config)
         {
             // use local bindable to avoid changing enabled state of game host's bindable.
-            handlerSensitivity = mouseHandler.Sensitivity.GetBoundCopy();
+            handlerSensitivity = mouseHandler.AxisSensitivity.GetBoundCopy();
             localSensitivity = handlerSensitivity.GetUnboundCopy();
 
             relativeMode = mouseHandler.UseRelativeMode.GetBoundCopy();
             windowMode = config.GetBindable<WindowMode>(FrameworkSetting.WindowMode);
+            showAxisSensitivity = new Bindable<bool>(false);//osuConfig.GetBindable<bool>(OsuSetting.SeparateAxisSensitivity);
 
             Children = new Drawable[]
             {
@@ -57,10 +68,26 @@ namespace osu.Game.Overlays.Settings.Sections.Input
                     Current = relativeMode,
                     Keywords = new[] { @"raw", @"input", @"relative", @"cursor" }
                 },
-                new SensitivitySetting
+                new SettingsCheckbox
+                {
+                    LabelText = MouseSettingsStrings.SeparateAxisSensitivity,
+                    TooltipText = MouseSettingsStrings.SeparateAxisSensitivityTooltip,
+                    Current = showAxisSensitivity
+                },
+                sensitivitySetting = new SensitivitySetting
                 {
                     LabelText = MouseSettingsStrings.CursorSensitivity,
-                    Current = localSensitivity
+                    Current = sensitivity
+                },
+                sensitivityXSetting = new SensitivitySetting
+                {
+                    LabelText = MouseSettingsStrings.CursorXSensitivity,
+                    Current = sensitivityX
+                },
+                sensitivityYSetting = new SensitivitySetting
+                {
+                    LabelText = MouseSettingsStrings.CursorYSensitivity,
+                    Current = sensitivityY
                 },
                 confineMouseModeSetting = new SettingsEnumDropdown<OsuConfineMouseMode>
                 {
@@ -87,6 +114,22 @@ namespace osu.Game.Overlays.Settings.Sections.Input
 
             relativeMode.BindValueChanged(relative => localSensitivity.Disabled = !relative.NewValue, true);
 
+            showAxisSensitivity.BindValueChanged(showAxisSensitivity =>
+            {
+                if(!showAxisSensitivity.NewValue)
+                {
+                    sensitivitySetting.Show();
+                    sensitivityXSetting.Hide();
+                    sensitivityYSetting.Hide();
+                }
+                else
+                {
+                    sensitivitySetting.Hide();
+                    sensitivityXSetting.Show();
+                    sensitivityYSetting.Show();
+                }
+            }, true);
+
             handlerSensitivity.BindValueChanged(val =>
             {
                 bool disabled = localSensitivity.Disabled;
@@ -97,6 +140,10 @@ namespace osu.Game.Overlays.Settings.Sections.Input
             }, true);
 
             localSensitivity.BindValueChanged(val => handlerSensitivity.Value = val.NewValue);
+
+            sensitivity.BindValueChanged(val => localSensitivity.Value = new Vector2((float)val.NewValue));
+            sensitivityX.BindValueChanged(val => localSensitivity.Value = new Vector2((float)val.NewValue, localSensitivity.Value.Y));
+            sensitivityY.BindValueChanged(val => localSensitivity.Value = new Vector2(localSensitivity.Value.X, (float)val.NewValue));
 
             windowMode.BindValueChanged(mode =>
             {

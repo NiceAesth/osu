@@ -30,6 +30,16 @@ namespace osu.Game.Localisation
         public static LocalisableString HighPrecisionMouseTooltip => new TranslatableString(getKey(@"high_precision_mouse_tooltip"), @"Attempts to bypass any operation system mouse acceleration. On windows, this is equivalent to what used to be known as ""Raw Input"".");
 
         /// <summary>
+        /// "Separate axis sensitivity"
+        /// </summary>
+        public static LocalisableString SeparateAxisSensitivity => new TranslatableString(getKey(@"separate_axis_sensitivity"), @"Separate axis sensitivity");
+
+        /// <summary>
+        /// "Separates sensitivity per X and Y axis"
+        /// </summary>
+        public static LocalisableString SeparateAxisSensitivityTooltip => new TranslatableString(getKey(@"separate_axis_sensitivity_tooltip"), @"Separates sensitivity per X and Y axis");
+
+        /// <summary>
         /// "Confine mouse cursor to window"
         /// </summary>
         public static LocalisableString ConfineMouseMode => new TranslatableString(getKey(@"confine_mouse_mode"), @"Confine mouse cursor to window");
@@ -58,6 +68,16 @@ namespace osu.Game.Localisation
         /// "Cursor sensitivity"
         /// </summary>
         public static LocalisableString CursorSensitivity => new TranslatableString(getKey(@"cursor_sensitivity"), @"Cursor sensitivity");
+
+        /// <summary>
+        /// "Cursor X sensitivity"
+        /// </summary>
+        public static LocalisableString CursorXSensitivity => new TranslatableString(getKey(@"cursor_x_sensitivity"), @"Cursor X sensitivity");
+
+        /// <summary>
+        /// "Cursor Y sensitivity"
+        /// </summary>
+        public static LocalisableString CursorYSensitivity => new TranslatableString(getKey(@"cursor_y_sensitivity"), @"Cursor Y sensitivity");
 
         /// <summary>
         /// "This setting has known issues on your platform. If you encounter problems, it is recommended to adjust sensitivity externally and keep this disabled for now."
