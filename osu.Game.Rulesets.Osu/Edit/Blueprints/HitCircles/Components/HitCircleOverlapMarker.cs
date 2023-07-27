@@ -91,7 +91,7 @@ namespace osu.Game.Rulesets.Osu.Edit.Blueprints.HitCircles.Components
                 float ringScale = MathHelper.Clamp(Interpolation.ValueAt(editorTime, 0, 1f, hitObjectTime, hitObjectTime + FADE_OUT_EXTENSION / 2, Easing.OutQuint), 0, 1);
 
                 ring.Scale = new Vector2(1 + 0.1f * ringScale);
-                content.Alpha = 0.9f * (1 - alpha);
+                content.Alpha = 0.75f * (1 - alpha);
             }
             else
                 content.Alpha = 0;
