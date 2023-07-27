@@ -13,6 +13,7 @@ using osu.Game.Beatmaps;
 using osu.Game.Configuration;
 using osu.Game.Extensions;
 using osu.Game.Online.API;
+using osu.Game.Online.API.Requests;
 using osu.Game.Online.API.Requests.Responses;
 using osu.Game.Rulesets;
 using osu.Game.Users;
@@ -23,6 +24,7 @@ namespace osu.Desktop
     internal partial class DiscordRichPresence : Component
     {
         private const string client_id = "367827983903490050";
+        private const string default_image_key = "osu_logo_lazer";
 
         private DiscordRpcClient client = null!;
 
@@ -36,12 +38,13 @@ namespace osu.Desktop
 
         private readonly IBindable<UserStatus> status = new Bindable<UserStatus>();
         private readonly IBindable<UserActivity> activity = new Bindable<UserActivity>();
+        private readonly Bindable<IBeatmapSetOnlineInfo?> beatmapSetOnline = new Bindable<IBeatmapSetOnlineInfo?>();
 
         private readonly Bindable<DiscordRichPresenceMode> privacyMode = new Bindable<DiscordRichPresenceMode>();
 
         private readonly RichPresence presence = new RichPresence
         {
-            Assets = new Assets { LargeImageKey = "osu_logo_lazer", }
+            Assets = new Assets { LargeImageKey = default_image_key, }
         };
 
         [BackgroundDependencyLoader]
@@ -68,10 +71,16 @@ namespace osu.Desktop
                 activity.BindTo(u.NewValue.Activity);
             }, true);
 
+            activity.BindValueChanged(_ =>
+            {
+                fetchBeatmapSet();
+                updateStatus();
+            });
+
             ruleset.BindValueChanged(_ => updateStatus());
             status.BindValueChanged(_ => updateStatus());
-            activity.BindValueChanged(_ => updateStatus());
             privacyMode.BindValueChanged(_ => updateStatus());
+            beatmapSetOnline.BindValueChanged(_ => updateStatus());
 
             client.Initialize();
         }
@@ -108,16 +117,23 @@ namespace osu.Desktop
                             Url = $@"{api.WebsiteRootUrl}/beatmapsets/{beatmap.BeatmapSet?.OnlineID}#{ruleset.Value.ShortName}/{beatmap.OnlineID}"
                         }
                     };
+
+                    presence.Assets.LargeImageKey = default_image_key;
+                    if (beatmapSetOnline.Value != null && beatmapSetOnline.Value.Covers.List != null && Encoding.UTF8.GetByteCount(beatmapSetOnline.Value.Covers.List) <= 256) // Ensure the URL will fit and not throw.
+                        presence.Assets.LargeImageKey = beatmapSetOnline.Value.Covers.List;
                 }
                 else
                 {
                     presence.Buttons = null;
+                    presence.Assets.LargeImageKey = default_image_key;
                 }
             }
             else
             {
                 presence.State = "Idle";
                 presence.Details = string.Empty;
+                presence.Buttons = null;
+                presence.Assets.LargeImageKey = default_image_key;
             }
 
             // update user information
@@ -171,6 +187,37 @@ namespace osu.Desktop
             }
 
             return null;
+        }
+
+        private void fetchBeatmapSet()
+        {
+            IBeatmapInfo? beatmap = getBeatmap(activity.Value);
+            if (beatmap == null)
+            {
+                beatmapSetOnline.Value = null;
+                return;
+            }
+
+            if (beatmap.BeatmapSet is IBeatmapSetOnlineInfo online)
+            {
+                beatmapSetOnline.Value = online;
+            }
+            else
+            {
+                if (api.IsLoggedIn)
+                {
+                    var req = new GetBeatmapSetRequest(beatmap.OnlineID, BeatmapSetLookupType.BeatmapId);
+                    req.Success += res =>
+                    {
+                        beatmapSetOnline.Value = res;
+                    };
+                    api.Queue(req);
+                }
+                else
+                {
+                    beatmapSetOnline.Value = null;
+                }
+            }
         }
 
         private string getDetails(UserActivity activity)
