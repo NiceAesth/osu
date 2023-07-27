@@ -30,7 +30,7 @@ namespace osu.Game.Screens.Edit
 
             RelativeSizeAxes = Axes.X;
 
-            Height = 60;
+            Height = 50;
 
             Masking = true;
             EdgeEffect = new EdgeEffectParameters
@@ -46,6 +46,7 @@ namespace osu.Game.Screens.Edit
                 {
                     RelativeSizeAxes = Axes.Both,
                     Colour = colourProvider.Background4,
+                    Alpha = 0.5f
                 },
                 new Container
                 {

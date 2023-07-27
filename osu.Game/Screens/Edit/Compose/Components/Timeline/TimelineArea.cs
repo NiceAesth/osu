@@ -104,30 +104,20 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
                                 AutoSizeAxes = Axes.Y,
                                 Children = new Drawable[]
                                 {
-                                    // the out-of-bounds portion of the centre marker.
-                                    new Box
-                                    {
-                                        Width = 24,
-                                        Height = EditorScreenWithTimeline.PADDING,
-                                        Depth = float.MaxValue,
-                                        Colour = colours.Red1,
-                                        Anchor = Anchor.TopCentre,
-                                        Origin = Anchor.BottomCentre,
-                                    },
                                     new Box
                                     {
                                         RelativeSizeAxes = Axes.Both,
                                         Depth = float.MaxValue,
-                                        Colour = colourProvider.Background5
-                                    },
+                                        Colour = colourProvider.Background5,
+                                        Alpha = 0.5f
+        },
                                     Timeline = new Timeline(userContent),
                                 }
-                            },
+},
                             new Container
                             {
                                 RelativeSizeAxes = Axes.Both,
                                 Name = @"Zoom controls",
-                                Padding = new MarginPadding { Right = padding },
                                 Children = new Drawable[]
                                 {
                                     new Box

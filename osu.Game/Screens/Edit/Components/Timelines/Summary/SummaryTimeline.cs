@@ -20,6 +20,7 @@ namespace osu.Game.Screens.Edit.Components.Timelines.Summary
         private void load(OverlayColourProvider colourProvider)
         {
             Background.Colour = colourProvider.Background6;
+            Background.Alpha = 0.25f;
 
             Children = new Drawable[]
             {

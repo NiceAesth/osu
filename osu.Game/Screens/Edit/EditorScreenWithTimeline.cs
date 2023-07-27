@@ -54,14 +54,14 @@ namespace osu.Game.Screens.Edit
                                 new Box
                                 {
                                     RelativeSizeAxes = Axes.Both,
-                                    Colour = colourProvider.Background4
+                                    Colour = colourProvider.Background4,
+                                    Alpha = 0.5f
                                 },
                                 new Container
                                 {
                                     Name = "Timeline content",
                                     RelativeSizeAxes = Axes.X,
                                     AutoSizeAxes = Axes.Y,
-                                    Padding = new MarginPadding { Horizontal = PADDING, Top = PADDING },
                                     Child = new GridContainer
                                     {
                                         RelativeSizeAxes = Axes.X,

@@ -1,11 +1,11 @@
 ﻿// Copyright (c) ppy Pty Ltd <contact@ppy.sh>. Licensed under the MIT Licence.
 // See the LICENCE file in the repository root for full licence text.
 
-using osu.Framework.Graphics;
-using osu.Game.Graphics.Sprites;
 using osu.Framework.Allocation;
+using osu.Framework.Graphics;
 using osu.Game.Extensions;
 using osu.Game.Graphics;
+using osu.Game.Graphics.Sprites;
 using osu.Game.Overlays;
 using osuTK;
 
@@ -26,6 +26,7 @@ namespace osu.Game.Screens.Edit.Components
         private void load(OsuColour colours, OverlayColourProvider colourProvider)
         {
             Background.Colour = colourProvider.Background5;
+            Background.Alpha = 0.25f;
 
             Children = new Drawable[]
             {

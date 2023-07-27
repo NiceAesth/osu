@@ -141,6 +141,7 @@ namespace osu.Game.Rulesets.Edit
                         {
                             Colour = colourProvider.Background5,
                             RelativeSizeAxes = Axes.Both,
+                            Alpha = 0.5f
                         },
                         LeftToolbox = new ExpandingToolboxContainer(TOOLBOX_CONTRACTED_SIZE_LEFT, 200)
                         {
@@ -186,6 +187,7 @@ namespace osu.Game.Rulesets.Edit
                         {
                             Colour = colourProvider.Background5,
                             RelativeSizeAxes = Axes.Both,
+                            Alpha = 0.5f
                         },
                         RightToolbox = new ExpandingToolboxContainer(TOOLBOX_CONTRACTED_SIZE_RIGHT, 250)
                         {
