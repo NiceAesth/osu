@@ -110,10 +110,10 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
                                         Depth = float.MaxValue,
                                         Colour = colourProvider.Background5,
                                         Alpha = 0.5f
-        },
+                                    },
                                     Timeline = new Timeline(userContent),
                                 }
-},
+                            },
                             new Container
                             {
                                 RelativeSizeAxes = Axes.Both,
