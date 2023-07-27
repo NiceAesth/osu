@@ -22,6 +22,8 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
             NodeIndex = nodeIndex;
         }
 
+        protected override Color4 GetRepresentingColour(OsuColour colours) => colours.PinkDarker;
+
         protected override IList<HitSampleInfo> GetSamples()
         {
             var hasRepeats = (IHasRepeats)HitObject;

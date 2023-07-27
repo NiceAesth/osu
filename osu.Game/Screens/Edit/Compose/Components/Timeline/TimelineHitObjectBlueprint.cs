@@ -112,9 +112,8 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
                 samplePointPiece = new SamplePointPiece(Item)
                 {
                     Anchor = Anchor.BottomLeft,
-                    Origin = Anchor.TopCentre,
-                    X = Item is IHasRepeats ? 30 : 0,
-                    AlternativeColor = Item is IHasRepeats
+                    OriginPosition = Item is IHasRepeats ? new Vector2(10, 0) : new Vector2(2, 0),
+                    Y = 17
                 },
             });
 
@@ -256,10 +255,11 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
             {
                 nodeSamplesContainer.Add(new NodeSamplePointPiece(Item, i)
                 {
-                    X = (float)i / (repeats.RepeatCount + 1),
-                    RelativePositionAxes = Axes.X,
                     Anchor = Anchor.BottomLeft,
-                    Origin = Anchor.TopCentre
+                    RelativePositionAxes = Axes.X,
+                    OriginPosition = i == 0 ? new Vector2(-6, 0) : new Vector2(2, 0),
+                    X = (float)i / (repeats.RepeatCount + 1),
+                    Y = 17,
                 });
             }
         }

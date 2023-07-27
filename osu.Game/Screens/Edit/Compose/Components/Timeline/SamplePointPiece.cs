@@ -12,10 +12,12 @@ using osu.Framework.Extensions.IEnumerableExtensions;
 using osu.Framework.Graphics;
 using osu.Framework.Graphics.Containers;
 using osu.Framework.Graphics.Cursor;
+using osu.Framework.Graphics.Shapes;
 using osu.Framework.Graphics.UserInterface;
 using osu.Framework.Input.Events;
 using osu.Game.Audio;
 using osu.Game.Graphics;
+using osu.Game.Graphics.Sprites;
 using osu.Game.Graphics.UserInterface;
 using osu.Game.Graphics.UserInterfaceV2;
 using osu.Game.Rulesets.Objects;
@@ -27,9 +29,16 @@ using osuTK.Input;
 
 namespace osu.Game.Screens.Edit.Compose.Components.Timeline
 {
-    public partial class SamplePointPiece : HitObjectPointPiece, IHasPopover
+    public partial class SamplePointPiece : Container, IHasPopover
     {
         public readonly HitObject HitObject;
+
+        private Container volumeBar = null!;
+        private OsuSpriteText label = null!;
+        private OsuSpriteText additionLabel = null!;
+        private Container additionsContainer = null!;
+
+        protected virtual Color4 GetRepresentingColour(OsuColour colours) => colours.Pink;
 
         public SamplePointPiece(HitObject hitObject)
         {
@@ -41,10 +50,82 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
         protected override Color4 GetRepresentingColour(OsuColour colours) => AlternativeColor ? colours.PinkDarker : colours.Pink;
 
         [BackgroundDependencyLoader]
-        private void load()
+        private void load(OsuColour colours)
         {
-            HitObject.DefaultsApplied += _ => updateText();
-            updateText();
+            Color4 colour = GetRepresentingColour(colours);
+            var additionColours = new[]
+            {
+                colours.Yellow,
+                colours.Blue,
+                colours.Purple,
+            };
+
+            AutoSizeAxes = Axes.X;
+            Height = 40;
+            InternalChildren = new Drawable[]
+            {
+                volumeBar = new Container
+                {
+                    RelativeSizeAxes = Axes.Y,
+                    Anchor = Anchor.BottomLeft,
+                    Origin = Anchor.BottomCentre,
+                    Width = 4,
+                    Height = GetVolumeValue(GetSamples()) / 100f,
+                    X = 2,
+                    CornerRadius = 2,
+                    CornerExponent = 2,
+                    Masking = true,
+                    Children = new Drawable[]
+                    {
+                        new Box
+                        {
+                            Colour = colour,
+                            RelativeSizeAxes = Axes.Both
+                        }
+                    }
+                },
+                additionLabel = new OsuSpriteText
+                {
+                    Anchor = Anchor.BottomLeft,
+                    Origin = Anchor.BottomLeft,
+                    Position = new Vector2(6, -12),
+                    Font = OsuFont.Default.With(size: 12, weight: FontWeight.SemiBold),
+                    Colour = colours.GrayF,
+                    Truncate = true,
+                },
+                label = new OsuSpriteText
+                {
+                    Anchor = Anchor.BottomLeft,
+                    Origin = Anchor.BottomLeft,
+                    X = 6,
+                    Font = OsuFont.Default.With(size: 12, weight: FontWeight.SemiBold),
+                    Colour = colours.GrayF,
+                    Truncate = true,
+                },
+                additionsContainer = new Container
+                {
+                    Anchor = Anchor.TopLeft,
+                    Origin = Anchor.TopCentre,
+                    X = 9,
+                    RelativeSizeAxes = Axes.Y,
+                    AutoSizeAxes = Axes.X,
+                }
+            };
+
+            for (int i = 0; i < 3; i++)
+            {
+                additionsContainer.Add(new Circle
+                {
+                    Anchor = Anchor.TopCentre,
+                    Origin = Anchor.TopCentre,
+                    Size = new Vector2(4),
+                    Colour = additionColours[i],
+                    Y = i * 5,
+                });
+            }
+
+            HitObject.DefaultsApplied += _ => updateVisual();
+            updateVisual();
         }
 
         protected override bool OnClick(ClickEvent e)
@@ -53,9 +134,28 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
             return true;
         }
 
-        private void updateText()
+        private void updateVisual()
         {
-            Label.Text = $"{abbreviateBank(GetBankValue(GetSamples()))} {GetVolumeValue(GetSamples())}";
+            var samples = GetSamples();
+            int i = 0;
+            string? bank = abbreviateBank(GetBankValue(samples));
+            string? additionBank = abbreviateBank(GetAdditionBankValue(samples));
+
+            label.Text = bank ?? string.Empty;
+            additionLabel.Text = additionBank != bank && additionBank is not null ? additionBank : string.Empty;
+            volumeBar.ResizeHeightTo(GetVolumeValue(samples) / 100f, 200, Easing.OutQuint);
+
+            foreach (string sampleName in HitSampleInfo.AllAdditions)
+            {
+                if (samples.Any(s => s.Name == sampleName))
+                {
+                    additionsContainer.Children[i++].Show();
+                }
+                else
+                {
+                    additionsContainer.Children[i++].Hide();
+                }
+            }
         }
 
         private static string? abbreviateBank(string? bank)
