@@ -45,10 +45,6 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
             HitObject = hitObject;
         }
 
-        public bool AlternativeColor { get; init; }
-
-        protected override Color4 GetRepresentingColour(OsuColour colours) => AlternativeColor ? colours.PinkDarker : colours.Pink;
-
         [BackgroundDependencyLoader]
         private void load(OsuColour colours)
         {
@@ -84,23 +80,21 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
                         }
                     }
                 },
-                additionLabel = new OsuSpriteText
+                additionLabel = new TruncatingSpriteText
                 {
                     Anchor = Anchor.BottomLeft,
                     Origin = Anchor.BottomLeft,
                     Position = new Vector2(6, -12),
                     Font = OsuFont.Default.With(size: 12, weight: FontWeight.SemiBold),
-                    Colour = colours.GrayF,
-                    Truncate = true,
+                    Colour = colours.GrayF
                 },
-                label = new OsuSpriteText
+                label = new TruncatingSpriteText
                 {
                     Anchor = Anchor.BottomLeft,
                     Origin = Anchor.BottomLeft,
                     X = 6,
                     Font = OsuFont.Default.With(size: 12, weight: FontWeight.SemiBold),
-                    Colour = colours.GrayF,
-                    Truncate = true,
+                    Colour = colours.GrayF
                 },
                 additionsContainer = new Container
                 {
