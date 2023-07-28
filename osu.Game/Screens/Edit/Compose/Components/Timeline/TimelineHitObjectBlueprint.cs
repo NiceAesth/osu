@@ -113,7 +113,7 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
                 {
                     Anchor = Anchor.BottomLeft,
                     OriginPosition = Item is IHasRepeats ? new Vector2(10, 0) : new Vector2(2, 0),
-                    Y = 17
+                    Y = 30
                 },
             });
 
