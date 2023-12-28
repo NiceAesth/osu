@@ -146,8 +146,9 @@ namespace osu.Game.Rulesets.Edit
                     AutoSizeAxes = Axes.X,
                     Children = new Drawable[]
                     {
-                        new Box
+                        LeftToolboxBackgroundBox = new Box
                         {
+                            Alpha = 0.5f,
                             Colour = colourProvider.Background5,
                             RelativeSizeAxes = Axes.Both,
                         },
@@ -191,8 +192,9 @@ namespace osu.Game.Rulesets.Edit
                     AutoSizeAxes = Axes.X,
                     Children = new Drawable[]
                     {
-                        new Box
+                        RightToolboxBackgroundBox = new Box
                         {
+                            Alpha = 0.5f,
                             Colour = colourProvider.Background5,
                             RelativeSizeAxes = Axes.Both,
                         },
@@ -504,6 +506,9 @@ namespace osu.Game.Rulesets.Edit
         public const float TOOLBOX_CONTRACTED_SIZE_RIGHT = 120;
 
         public readonly Ruleset Ruleset;
+        public readonly Bindable<bool> HasFocusBindable = new BindableBool();
+        public Box LeftToolboxBackgroundBox { get; protected set; }
+        public Box RightToolboxBackgroundBox { get; protected set; }
 
         protected HitObjectComposer(Ruleset ruleset)
         {
@@ -539,6 +544,17 @@ namespace osu.Game.Rulesets.Edit
         /// <param name="timestamp">The time instant to seek to, in milliseconds.</param>
         /// <param name="objectDescription">The ruleset-specific description of objects to select at the given timestamp.</param>
         public virtual void SelectFromTimestamp(double timestamp, string objectDescription) { }
+
+        protected override bool OnHover(HoverEvent e)
+        {
+            HasFocusBindable.Value = true;
+            return false;
+        }
+
+        protected override void OnHoverLost(HoverLostEvent e)
+        {
+            HasFocusBindable.Value = false;
+        }
 
         #region IPositionSnapProvider
 

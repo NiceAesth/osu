@@ -20,6 +20,8 @@ namespace osu.Game.Screens.Edit
 {
     internal partial class BottomBar : CompositeDrawable
     {
+        public Box BackgroundBox;
+        public SummaryTimeline SummaryTimeline;
         public TestGameplayButton TestGameplayButton { get; private set; }
 
         [BackgroundDependencyLoader]
@@ -42,10 +44,11 @@ namespace osu.Game.Screens.Edit
 
             InternalChildren = new Drawable[]
             {
-                new Box
+                BackgroundBox = new Box
                 {
                     RelativeSizeAxes = Axes.Both,
                     Colour = colourProvider.Background4,
+                    Alpha = 0.5f
                 },
                 new Container
                 {
@@ -65,7 +68,7 @@ namespace osu.Game.Screens.Edit
                             new Drawable[]
                             {
                                 new TimeInfoContainer { RelativeSizeAxes = Axes.Both },
-                                new SummaryTimeline { RelativeSizeAxes = Axes.Both },
+                                SummaryTimeline = new SummaryTimeline { RelativeSizeAxes = Axes.Both },
                                 new PlaybackControl { RelativeSizeAxes = Axes.Both },
                                 TestGameplayButton = new TestGameplayButton
                                 {

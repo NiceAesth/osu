@@ -20,6 +20,7 @@ namespace osu.Game.Screens.Edit.Components.Timelines.Summary
         private void load(OverlayColourProvider colourProvider)
         {
             Background.Colour = colourProvider.Background6;
+            Background.Alpha = 0.25f;
 
             Children = new Drawable[]
             {
@@ -83,6 +84,16 @@ namespace osu.Game.Screens.Edit.Components.Timelines.Summary
                     Height = 0.10f
                 }
             };
+        }
+
+        public void FadeIn()
+        {
+            Background.FadeTo(1, 500, Easing.OutQuad);
+        }
+
+        public void FadeOut()
+        {
+            Background.FadeTo(0.25f, 500, Easing.OutQuad);
         }
     }
 }

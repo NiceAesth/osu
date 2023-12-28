@@ -20,6 +20,8 @@ namespace osu.Game.Screens.Edit
 
         public Container MainContent { get; private set; } = null!;
 
+        public Box TimelineBackgroundBox { get; private set; } = null!;
+
         private LoadingSpinner spinner = null!;
 
         protected EditorScreenWithTimeline(EditorScreenMode type)
@@ -52,10 +54,11 @@ namespace osu.Game.Screens.Edit
                             AutoSizeAxes = Axes.Y,
                             Children = new Drawable[]
                             {
-                                new Box
+                                TimelineBackgroundBox = new Box
                                 {
                                     RelativeSizeAxes = Axes.Both,
-                                    Colour = colourProvider.Background4
+                                    Colour = colourProvider.Background4,
+                                    Alpha = 0.5f
                                 },
                                 new Container
                                 {

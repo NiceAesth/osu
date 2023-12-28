@@ -18,6 +18,7 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
 {
     public partial class TimelineArea : CompositeDrawable
     {
+        public Box BackgroundBox = null!;
         public Timeline Timeline = null!;
 
         private readonly Drawable userContent;
@@ -114,11 +115,12 @@ namespace osu.Game.Screens.Edit.Compose.Components.Timeline
                                         Anchor = Anchor.TopCentre,
                                         Origin = Anchor.BottomCentre,
                                     },
-                                    new Box
+                                    BackgroundBox = new Box
                                     {
                                         RelativeSizeAxes = Axes.Both,
                                         Depth = float.MaxValue,
-                                        Colour = colourProvider.Background5
+                                        Colour = colourProvider.Background5,
+                                        Alpha = 0.5f
                                     },
                                     Timeline = new Timeline(userContent),
                                 }

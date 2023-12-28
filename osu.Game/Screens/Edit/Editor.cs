@@ -308,8 +308,7 @@ namespace osu.Game.Screens.Edit
                         Padding = new MarginPadding { Top = 40, Bottom = 60 },
                         Child = screenContainer = new Container<EditorScreen>
                         {
-                            RelativeSizeAxes = Axes.Both,
-                            Masking = true
+                            RelativeSizeAxes = Axes.Both
                         }
                     },
                     new Container
@@ -402,6 +401,36 @@ namespace osu.Game.Screens.Edit
             Mode.BindValueChanged(onModeChanged, true);
 
             musicController.TrackChanged += onTrackChanged;
+            currentScreen.OnLoadComplete += _ =>
+            {
+                var composer = currentScreen.Dependencies.Get<HitObjectComposer>();
+                composer.HasFocusBindable.BindValueChanged(changedEvent =>
+                {
+                    if (currentScreen is not EditorScreenWithTimeline timelineScreen)
+                        return;
+
+                    var timelineArea = timelineScreen.ChildrenOfType<TimelineArea>().FirstOrDefault();
+
+                    if (changedEvent.NewValue && currentScreen is not TimingScreen)
+                    {
+                        timelineScreen.TimelineBackgroundBox.FadeTo(0.5f, 500, Easing.OutQuad);
+                        bottomBar.BackgroundBox.FadeTo(0.5f, 500, Easing.OutQuad);
+                        bottomBar.SummaryTimeline.FadeOut();
+                        timelineArea?.BackgroundBox.FadeTo(0.5f, 500, Easing.OutQuad);
+                        composer.LeftToolboxBackgroundBox.FadeTo(0.5f, 500, Easing.OutQuad);
+                        composer.RightToolboxBackgroundBox.FadeTo(0.5f, 500, Easing.OutQuad);
+                    }
+                    else
+                    {
+                        timelineScreen.TimelineBackgroundBox.FadeTo(1, 500, Easing.OutQuad);
+                        bottomBar.BackgroundBox.FadeTo(1, 500, Easing.OutQuad);
+                        bottomBar.SummaryTimeline.FadeIn();
+                        timelineArea?.BackgroundBox.FadeTo(1, 500, Easing.OutQuad);
+                        composer.LeftToolboxBackgroundBox.FadeTo(1, 500, Easing.OutQuad);
+                        composer.RightToolboxBackgroundBox.FadeTo(1, 500, Easing.OutQuad);
+                    }
+                });
+            };
         }
 
         protected override void Dispose(bool isDisposing)
