@@ -41,6 +41,7 @@ namespace osu.Game.Overlays
             new OnlineSection(),
             new MaintenanceSection(),
             new DebugSection(),
+            new FreakySection(),
         };
 
         private readonly List<SettingsSubPanel> subPanels = new List<SettingsSubPanel>();

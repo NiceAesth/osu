@@ -91,6 +91,7 @@ namespace osu.Game.Overlays.FirstRunSetup
                         new OnlineSection(),
                         new MaintenanceSection(),
                         new DebugSection(),
+                        new FreakySection(),
                     },
                     SearchTerm = SettingsItem<bool>.CLASSIC_DEFAULT_SEARCH_TERM,
                 }
